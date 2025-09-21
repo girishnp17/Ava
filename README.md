@@ -1,8 +1,14 @@
-# 🚀 AI Career Toolkit - Comprehensive Career Development Platform
+# 🚀 Ava - AI-Powered Career Companion
 
-An intelligent, AI-powered platform designed to accelerate your career journey through personalized guidance, smart job matching, and adaptive learning pathways. Transform your professional growth with cutting-edge artificial intelligence.
+**Ava** is an intelligent, AI-powered platform designed to accelerate your career journey through personalized guidance, smart job matching, and adaptive learning pathways. Transform your professional growth with cutting-edge artificial intelligence and your personal AI career companion.
 
 ## ✨ Key Features
+
+### 🤖 **AI Career Chatbot - Your Personal Guide**
+- **24/7 Career Assistance**: Get instant answers to career questions through Ava's intelligent chatbot
+- **Conversational Career Guidance**: Natural language interactions for career advice, job search tips, and professional development
+- **Contextual Recommendations**: Smart suggestions based on your current situation and career goals
+- **Interactive Problem Solving**: Step-by-step guidance through career challenges and decisions
 
 ### 🎯 **AI-Powered Career Guidance**
 - **Intelligent Career Analysis**: Get personalized career insights based on your skills, experience, and market trends
@@ -22,13 +28,13 @@ An intelligent, AI-powered platform designed to accelerate your career journey t
 - **Industry-Aligned Content**: Courses and resources matched to current market demands
 - **Progress Tracking**: Monitor your advancement with detailed analytics and achievements
 
-### 📄 **Intelligent Resume Generation**
+### 📄 **Intelligent Resume Generation** *(Beta)*
 - **ATS-Optimized Templates**: Professional formats designed to pass automated screening systems
 - **Dynamic Content Generation**: AI-crafted bullet points that highlight your unique value proposition
 - **Multi-Format Export**: Generate resumes in various formats for different application requirements
 - **Continuous Optimization**: Regular updates based on job market trends and hiring preferences
 
-### 🎤 **Interactive Interview Preparation**
+### 🎤 **Interactive Interview Preparation** *(Beta)*
 - **AI-Powered Mock Interviews**: Practice with intelligent voice recognition and real-time feedback
 - **Personalized Question Banks**: Industry-specific questions tailored to your target roles
 - **Performance Analytics**: Detailed insights on communication skills, confidence, and technical accuracy
@@ -38,6 +44,7 @@ An intelligent, AI-powered platform designed to accelerate your career journey t
 
 ### **🤖 Advanced AI Integration**
 - Powered by cutting-edge language models for human-like understanding and responses
+- **Intelligent Chatbot**: Always-available AI assistant for career guidance and support
 - Continuous learning algorithms that improve recommendations over time
 - Multi-modal AI processing for text, voice, and document analysis
 
@@ -90,8 +97,10 @@ An intelligent, AI-powered platform designed to accelerate your career journey t
    npm run dev
    ```
 
-3. **Access the Platform**
+3. **Access Ava Platform**
    - Open your browser to `http://localhost:3001`
+   - Meet Ava, your AI career companion
+   - Start chatting with the AI assistant for instant career guidance
    - Begin your AI-powered career journey immediately
 
 ## 🛠️ Core Capabilities
@@ -114,8 +123,9 @@ An intelligent, AI-powered platform designed to accelerate your career journey t
 - **Peer Learning Networks**: Connect with others on similar career paths
 - **Mentorship Matching**: Find experienced professionals in your target field
 
-### **Voice-Powered Features**
-- **Natural Language Interaction**: Communicate with the AI using conversational speech
+### **Voice-Powered Features & AI Chat**
+- **Natural Language Interaction**: Communicate with Ava using conversational speech or text
+- **AI Career Chatbot**: Get instant guidance through intelligent conversation
 - **Interview Simulation**: Practice with realistic voice-based interview scenarios
 - **Pronunciation and Clarity Training**: Improve your verbal communication skills
 - **Accent Adaptation**: Practice speaking in different professional contexts
@@ -165,5 +175,5 @@ We welcome contributions from the community! Whether you're interested in:
 
 ---
 
-**Transform your career with the power of artificial intelligence. Start your journey today and unlock your professional potential with personalized, data-driven insights and guidance.**
+**Transform your career with Ava, your AI-powered career companion. Start your journey today and unlock your professional potential with personalized, data-driven insights and guidance through intelligent conversation.**
 
