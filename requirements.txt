@@ -1,86 +1,114 @@
-# ===================================================================
-# Gen-AI Project - Unified Requirements File
-# ===================================================================
-# 
-# This is the ONLY requirements file for the entire project.
-# All AI modules and components use these unified dependencies.
-#
-# Installation:
-#   1) Create virtual environment: python3 -m venv .venv
-#   2) Activate: source .venv/bin/activate  (Linux/Mac) or .venv\Scripts\activate (Windows)
-#   3) Upgrade pip: pip install --upgrade pip setuptools wheel
-#   4) Install: pip install -r requirements.txt
-#
-# Note: Some packages require system dependencies (see comments below)
-
-# -------------------------
-# Core Python Environment
-# -------------------------
+# Core Environment
 python-dotenv>=1.0.0
 
-# -------------------------
-# AI/ML Libraries
-# -------------------------
+# AI and Machine Learning
 google-generativeai>=0.8.2
 google-genai>=1.36.0
 google-api-python-client>=2.96.0
 
-# -------------------------
-# Web Framework & Realtime
-# -------------------------
-flask>=2.3.0
-flask-cors>=4.0.0
+# Web Framework
+flask>=3.1.0
+flask-cors>=6.0.0
 flask-socketio>=5.3.6
-eventlet>=0.35.2
 
-# -------------------------
-# HTTP & Web Scraping
-# -------------------------
+# HTTP and Requests
 requests>=2.31.0
+httpx>=0.28.1
+
+# Data Processing
 beautifulsoup4>=4.9.0
 lxml>=4.9.0
-
-# -------------------------
-# Browser Automation (optional - COMMENTED OUT FOR VERCEL)
-# -------------------------
-# selenium>=4.0.0
-# webdriver-manager>=3.8.0
-# fake-useragent>=0.1.11
-
-# -------------------------
-# Data Processing
-# -------------------------
 numpy>=1.24.0
 pandas>=2.1.4
 
-# -------------------------
 # Document Processing
-# -------------------------
 PyPDF2>=3.0.1
-python-docx>=1.1.0
+python-docx>=1.2.0
 
-# -------------------------
-# Search APIs
-# -------------------------
-serpapi>=0.1.5
+# Authentication and Security
+google-auth>=2.15.0
+google-auth-httplib2>=0.2.0
 
-# -------------------------
-# Input/Output (COMMENTED OUT FOR VERCEL - no keyboard access in serverless)
-# -------------------------
-# keyboard>=0.13.5
+# Utilities
+typing-extensions>=4.8.0
+pydantic>=2.0.0
+tenacity>=8.2.3
+tqdm>=4.60.0
+protobuf>=4.0.0
 
-# -------------------------
-# Audio Processing (requires system PortAudio)
-# -------------------------
-# IMPORTANT: Install system PortAudio library first:
-# - Ubuntu/Debian: sudo apt-get install libportaudio2 libportaudiocpp0 portaudio19-dev
-# - macOS: brew install portaudio
-# - Windows: Download from http://www.portaudio.com/
-# COMMENTED OUT FOR VERCEL DEPLOYMENT (no audio support in serverless)
-# pyaudio>=0.2.14
+# Web Server (for Vercel)
+gunicorn>=21.0.0
 
-# -------------------------
-# UI Components (optional - COMMENTED OUT FOR VERCEL)
-# -------------------------
-# Streamlit for standalone demos (not needed for main Flask app)
-# streamlit>=1.28.0
+# JSON and Data
+jsonschema>=4.0.0
+
+# Date and Time
+python-dateutil>=2.8.2
+pytz>=2022.1
+
+# String Processing
+charset-normalizer>=3.0.0
+urllib3>=1.26.0
+certifi>=2022.0.0
+
+# Markup Processing
+markupsafe>=2.1.0
+jinja2>=3.1.0
+
+# Development Tools
+blinker>=1.6.0
+click>=8.1.0
+itsdangerous>=2.1.0
+werkzeug>=3.0.0
+
+# WebSocket Support (Serverless compatible)
+python-socketio>=5.12.0
+python-engineio>=4.11.0
+websockets>=13.0.0
+
+# Google APIs
+googleapis-common-protos>=1.56.0
+google-api-core>=2.25.0
+grpcio>=1.60.0
+grpcio-status>=1.60.0
+
+# Async Support
+anyio>=4.8.0
+sniffio>=1.3.0
+
+# Validation
+annotated-types>=0.6.0
+pydantic-core>=2.30.0
+
+# HTTP Libraries
+httplib2>=0.22.0
+httpcore>=1.0.0
+h11>=0.16.0
+
+# Packaging
+packaging>=23.0
+six>=1.16.0
+
+# Template Engine
+uritemplate>=4.2.0
+
+# WebSocket Client
+websocket-client>=1.8.0
+
+# Bidirectional Dictionary
+bidict>=0.23.0
+
+# Protocol Buffers
+proto-plus>=1.26.0
+
+# DNS
+dnspython>=2.8.0
+
+# Green Threads (Serverless compatible alternative)
+greenlet>=3.0.0
+
+# Event Loop
+eventlet>=0.40.0
+
+# Soup Parsing
+soupsieve>=2.8
