@@ -30,6 +30,7 @@ sys.path.insert(0, os.path.join(current_dir, 'ai-modules', 'career-guidance-ai')
 sys.path.insert(0, os.path.join(current_dir, 'ai-modules', 'course-recommender'))
 sys.path.insert(0, os.path.join(current_dir, 'ai-modules', 'JobbbSSS'))
 sys.path.insert(0, os.path.join(current_dir, 'ai-modules', 'resume-generator'))
+sys.path.insert(0, os.path.join(current_dir, 'ai-modules', 'chatbot'))
 
 print("🔧 Loading AI modules...")
 
@@ -98,9 +99,104 @@ except Exception as e:
     print(f"❌ WebSocket Voice Interview Handler error: {e}")
     voice_handler = None
 
+# Import Career Compass Chat
+try:
+    from ai_chat_core import get_chat_response, create_new_session, get_chat_health
+    print("✅ Career Compass Chat loaded")
+except Exception as e:
+    print(f"❌ Career Compass Chat error: {e}")
+    get_chat_response = None
+    create_new_session = None
+    get_chat_health = None
+
 @app.route('/api/health')
 def health():
     return jsonify({'status': 'healthy', 'message': 'AI API running'})
+
+# ============================================================================
+# CHAT API - Career Compass Chatbot
+# ============================================================================
+
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    """Career Compass Chat API"""
+    try:
+        if get_chat_response is None:
+            return jsonify({
+                'response': "I'm experiencing some technical difficulties with my AI systems. However, I'm still here to help! I specialize in career guidance, skill development, and job search strategies. What specific area would you like to explore?",
+                'session_id': 'fallback'
+            })
+        
+        data = request.get_json()
+        message = data.get('message', '').strip()
+        session_id = data.get('session_id', 'default')
+        
+        if not message:
+            return jsonify({'error': 'Message is required'}), 400
+        
+        # Get response from chat module
+        result = get_chat_response(session_id, message)
+        
+        return jsonify({
+            'response': result.get('response', 'No response generated'),
+            'session_id': session_id,
+            'success': result.get('success', False)
+        })
+        
+    except Exception as e:
+        print(f"❌ Chat API error: {e}")
+        return jsonify({
+            'response': "I encountered an issue processing your message. Let me try to help anyway! I'm here to assist with career guidance, skill development, job searching strategies, and professional growth. What specific area would you like to explore?",
+            'session_id': data.get('session_id', 'fallback') if 'data' in locals() else 'fallback'
+        })
+
+@app.route('/api/chat/new-session', methods=['POST'])
+def new_chat_session():
+    """Create a new chat session"""
+    try:
+        import uuid
+        session_id = str(uuid.uuid4())
+        
+        if create_new_session:
+            success = create_new_session(session_id)
+            if success:
+                return jsonify({
+                    'session_id': session_id,
+                    'message': 'New session created successfully'
+                })
+        
+        return jsonify({
+            'session_id': session_id,
+            'message': 'Session created (fallback mode)'
+        })
+            
+    except Exception as e:
+        print(f"❌ Error creating new session: {e}")
+        return jsonify({'error': 'Error creating new session'}), 500
+
+@app.route('/api/chat/health', methods=['GET'])
+def chat_health():
+    """Chat system health check"""
+    try:
+        if get_chat_health:
+            health_data = get_chat_health()
+            return jsonify({
+                'status': 'healthy',
+                'chat_available': True,
+                **health_data
+            })
+        else:
+            return jsonify({
+                'status': 'degraded',
+                'chat_available': False,
+                'message': 'Chat module not loaded'
+            })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'chat_available': False,
+            'error': str(e)
+        })
 
 # ============================================================================
 # 5-PAGE APPLICATION STRUCTURE

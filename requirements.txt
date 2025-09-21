@@ -1,7 +1,10 @@
 # ===================================================================
-# Gen-AI Project - Unified Requirements
+# Gen-AI Project - Unified Requirements File
 # ===================================================================
 # 
+# This is the ONLY requirements file for the entire project.
+# All AI modules and components use these unified dependencies.
+#
 # Installation:
 #   1) Create virtual environment: python3 -m venv .venv
 #   2) Activate: source .venv/bin/activate  (Linux/Mac) or .venv\Scripts\activate (Windows)
@@ -73,8 +76,7 @@ keyboard>=0.13.5
 # - Ubuntu/Debian: sudo apt-get install libportaudio2 libportaudiocpp0 portaudio19-dev
 # - macOS: brew install portaudio
 # - Windows: Download from http://www.portaudio.com/
-# Then uncomment the line below:
-# pyaudio>=0.2.14
+pyaudio>=0.2.14
 
 # -------------------------
 # UI Components (optional)

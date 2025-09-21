@@ -8,8 +8,6 @@ import {
   Button, 
   Container,
   Stack,
-  Chip,
-  Avatar,
   alpha,
 } from '@mui/material';
 import { motion } from 'framer-motion';
@@ -25,6 +23,7 @@ import {
   Security,
   PlayArrow,
 } from '@mui/icons-material';
+import ChatBot from '../components/ChatBot/ChatBot';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -88,7 +87,7 @@ const HomePage: React.FC = () => {
 
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+    <Box sx={{ minHeight: '100vh' }}>
       {/* Hero Section */}
       <Container maxWidth="lg" sx={{ pt: 8, pb: 12 }}>
         <motion.div
@@ -97,37 +96,50 @@ const HomePage: React.FC = () => {
           transition={{ duration: 0.8 }}
         >
           <Box textAlign="center" sx={{ mb: 8 }}>
-            <Chip
-              label="AI-Powered Career Tools"
+            <Typography
+              variant="subtitle1"
               sx={{
                 mb: 3,
-                bgcolor: alpha('#3b82f6', 0.1),
-                color: '#3b82f6',
+                color: '#8b5cf6',
                 fontWeight: 600,
-                fontSize: '0.875rem',
-                px: 2,
-                py: 1,
+                fontSize: '1rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
               }}
-            />
+            >
+              AI-Powered Career Tools
+            </Typography>
             
             <Typography
               variant="h1"
               sx={{
                 mb: 3,
-                background: 'linear-gradient(135deg, #1e293b 0%, #3b82f6 100%)',
+                background: 'linear-gradient(135deg, #f1f5f9 0%, #8b5cf6 50%, #3b82f6 100%)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 maxWidth: '4xl',
                 mx: 'auto',
+                fontSize: { xs: '3rem', md: '4rem', lg: '5rem' },
+                fontWeight: 800,
+                textAlign: 'center',
               }}
             >
-              Career growth made{' '}
-              <Box component="span" sx={{ color: '#3b82f6' }}>
-                simple
-              </Box>
-              <br />
-              for ambitious professionals
+              Ava
+            </Typography>
+            
+            <Typography
+              variant="h3"
+              sx={{
+                mb: 3,
+                color: '#f1f5f9',
+                maxWidth: '4xl',
+                mx: 'auto',
+                textAlign: 'center',
+                fontWeight: 600,
+              }}
+            >
+              AI-Powered Career Tools
             </Typography>
             
             <Typography
@@ -138,6 +150,7 @@ const HomePage: React.FC = () => {
                 mx: 'auto',
                 fontSize: '1.25rem',
                 lineHeight: 1.7,
+                color: '#94a3b8',
               }}
             >
               Most career tools are helpful, but hard to use together. We make the{' '}
@@ -160,6 +173,15 @@ const HomePage: React.FC = () => {
                   py: 1.5,
                   fontSize: '1.1rem',
                   fontWeight: 600,
+                  background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+                  border: '1px solid rgba(139, 92, 246, 0.5)',
+                  boxShadow: '0 4px 20px rgba(139, 92, 246, 0.3)',
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%)',
+                    boxShadow: '0 8px 25px rgba(139, 92, 246, 0.4)',
+                    transform: 'translateY(-2px)',
+                  },
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
               >
                 Get started today
@@ -174,6 +196,14 @@ const HomePage: React.FC = () => {
                   py: 1.5,
                   fontSize: '1.1rem',
                   fontWeight: 600,
+                  borderColor: 'rgba(139, 92, 246, 0.5)',
+                  color: '#8b5cf6',
+                  '&:hover': {
+                    borderColor: '#8b5cf6',
+                    background: 'rgba(139, 92, 246, 0.1)',
+                    transform: 'translateY(-2px)',
+                  },
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
               >
                 Watch demo
@@ -189,7 +219,7 @@ const HomePage: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
         >
           <Box textAlign="center" sx={{ mb: 8 }}>
-            <Typography variant="h2" sx={{ mb: 3 }}>
+            <Typography variant="h2" sx={{ mb: 3, color: '#f1f5f9' }}>
               Everything you need to{' '}
               <Box component="span" sx={{ color: '#3b82f6' }}>
                 accelerate
@@ -202,6 +232,7 @@ const HomePage: React.FC = () => {
                 maxWidth: '600px',
                 mx: 'auto',
                 fontSize: '1.125rem',
+                color: '#94a3b8',
               }}
             >
               Our AI-powered platform provides all the tools you need to make informed 
@@ -221,6 +252,9 @@ const HomePage: React.FC = () => {
                       height: '100%',
                       p: 3,
                       textAlign: 'center',
+                      background: 'transparent',
+                      border: 'none',
+                      boxShadow: 'none',
                       transition: 'all 0.3s ease',
                       '&:hover': {
                         transform: 'translateY(-4px)',
@@ -252,7 +286,7 @@ const HomePage: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.6 }}
         >
           <Box textAlign="center" sx={{ mb: 8 }}>
-            <Typography variant="h2" sx={{ mb: 3 }}>
+            <Typography variant="h2" sx={{ mb: 3, color: '#f1f5f9' }}>
               Powerful tools for every career stage
             </Typography>
             <Typography
@@ -261,6 +295,7 @@ const HomePage: React.FC = () => {
                 maxWidth: '600px',
                 mx: 'auto',
                 fontSize: '1.125rem',
+                color: '#94a3b8',
               }}
             >
               From career exploration to interview preparation, our comprehensive 
@@ -283,9 +318,13 @@ const HomePage: React.FC = () => {
                       cursor: 'pointer',
                       position: 'relative',
                       overflow: 'hidden',
-                      transition: 'all 0.3s ease',
+                      background: 'transparent',
+                      border: 'none',
+                      borderRadius: 3,
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                       '&:hover': {
-                        transform: 'translateY(-4px)',
+                        transform: 'translateY(-8px)',
+                        background: 'rgba(139, 92, 246, 0.05)',
                       },
                       '&:before': {
                         content: '""',
@@ -294,7 +333,7 @@ const HomePage: React.FC = () => {
                         left: 0,
                         right: 0,
                         height: '4px',
-                        bgcolor: tool.color,
+                        background: `linear-gradient(135deg, ${tool.color} 0%, #8b5cf6 100%)`,
                       },
                     }}
                     onClick={() => navigate(tool.path)}
@@ -307,23 +346,25 @@ const HomePage: React.FC = () => {
                           mb: 2,
                         }}
                       >
-                        <Avatar
+                        <Box
                           sx={{
-                            bgcolor: alpha(tool.color, 0.1),
                             color: tool.color,
                             mr: 2,
                             width: 56,
                             height: 56,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                           }}
                         >
                           {tool.icon}
-                        </Avatar>
-                        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                        </Box>
+                        <Typography variant="h6" sx={{ fontWeight: 600, color: '#f1f5f9' }}>
                           {tool.title}
                         </Typography>
                       </Box>
                       
-                      <Typography variant="body2" sx={{ mb: 3 }}>
+                      <Typography variant="body2" sx={{ mb: 3, color: '#94a3b8' }}>
                         {tool.description}
                       </Typography>
                       
@@ -398,6 +439,9 @@ const HomePage: React.FC = () => {
           </Box>
         </motion.div>
       </Container>
+
+      {/* ChatBot Component */}
+      <ChatBot />
     </Box>
   );
 };
