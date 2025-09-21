@@ -29,10 +29,5 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "env": {
-    "GOOGLE_API_KEY": "@google_api_key",
-    "GOOGLE_SEARCH_ENGINE_ID": "@google_search_engine_id", 
-    "RAPIDAPI_KEY": "@rapidapi_key"
-  }
+  ]
 }
