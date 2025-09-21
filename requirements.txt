@@ -41,11 +41,11 @@ beautifulsoup4>=4.9.0
 lxml>=4.9.0
 
 # -------------------------
-# Browser Automation (optional)
+# Browser Automation (optional - COMMENTED OUT FOR VERCEL)
 # -------------------------
-selenium>=4.0.0
-webdriver-manager>=3.8.0
-fake-useragent>=0.1.11
+# selenium>=4.0.0
+# webdriver-manager>=3.8.0
+# fake-useragent>=0.1.11
 
 # -------------------------
 # Data Processing
@@ -65,9 +65,9 @@ python-docx>=1.1.0
 serpapi>=0.1.5
 
 # -------------------------
-# Input/Output
+# Input/Output (COMMENTED OUT FOR VERCEL - no keyboard access in serverless)
 # -------------------------
-keyboard>=0.13.5
+# keyboard>=0.13.5
 
 # -------------------------
 # Audio Processing (requires system PortAudio)
@@ -76,10 +76,11 @@ keyboard>=0.13.5
 # - Ubuntu/Debian: sudo apt-get install libportaudio2 libportaudiocpp0 portaudio19-dev
 # - macOS: brew install portaudio
 # - Windows: Download from http://www.portaudio.com/
-pyaudio>=0.2.14
+# COMMENTED OUT FOR VERCEL DEPLOYMENT (no audio support in serverless)
+# pyaudio>=0.2.14
 
 # -------------------------
-# UI Components (optional)
+# UI Components (optional - COMMENTED OUT FOR VERCEL)
 # -------------------------
 # Streamlit for standalone demos (not needed for main Flask app)
-streamlit>=1.28.0
+# streamlit>=1.28.0
