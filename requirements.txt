@@ -1,0 +1,83 @@
+# ===================================================================
+# Gen-AI Project - Unified Requirements
+# ===================================================================
+# 
+# Installation:
+#   1) Create virtual environment: python3 -m venv .venv
+#   2) Activate: source .venv/bin/activate  (Linux/Mac) or .venv\Scripts\activate (Windows)
+#   3) Upgrade pip: pip install --upgrade pip setuptools wheel
+#   4) Install: pip install -r requirements.txt
+#
+# Note: Some packages require system dependencies (see comments below)
+
+# -------------------------
+# Core Python Environment
+# -------------------------
+python-dotenv>=1.0.0
+
+# -------------------------
+# AI/ML Libraries
+# -------------------------
+google-generativeai>=0.8.2
+google-genai>=1.36.0
+google-api-python-client>=2.96.0
+
+# -------------------------
+# Web Framework & Realtime
+# -------------------------
+flask>=2.3.0
+flask-cors>=4.0.0
+flask-socketio>=5.3.6
+eventlet>=0.35.2
+
+# -------------------------
+# HTTP & Web Scraping
+# -------------------------
+requests>=2.31.0
+beautifulsoup4>=4.9.0
+lxml>=4.9.0
+
+# -------------------------
+# Browser Automation (optional)
+# -------------------------
+selenium>=4.0.0
+webdriver-manager>=3.8.0
+fake-useragent>=0.1.11
+
+# -------------------------
+# Data Processing
+# -------------------------
+numpy>=1.24.0
+pandas>=2.1.4
+
+# -------------------------
+# Document Processing
+# -------------------------
+PyPDF2>=3.0.1
+python-docx>=1.1.0
+
+# -------------------------
+# Search APIs
+# -------------------------
+serpapi>=0.1.5
+
+# -------------------------
+# Input/Output
+# -------------------------
+keyboard>=0.13.5
+
+# -------------------------
+# Audio Processing (requires system PortAudio)
+# -------------------------
+# IMPORTANT: Install system PortAudio library first:
+# - Ubuntu/Debian: sudo apt-get install libportaudio2 libportaudiocpp0 portaudio19-dev
+# - macOS: brew install portaudio
+# - Windows: Download from http://www.portaudio.com/
+# Then uncomment the line below:
+# pyaudio>=0.2.14
+
+# -------------------------
+# UI Components (optional)
+# -------------------------
+# Streamlit for standalone demos (not needed for main Flask app)
+streamlit>=1.28.0
