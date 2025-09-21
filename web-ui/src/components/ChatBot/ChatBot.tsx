@@ -35,7 +35,7 @@ const ChatBot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "🚀 Hi there! I'm Career Compass, your AI career guide. I'm here to help you navigate your professional journey, find opportunities, and accelerate your career growth. What can I help you with today?",
+      text: "🚀 Hi there! I'm Ava, your AI career guide. I'm here to help you navigate your professional journey, find opportunities, and accelerate your career growth. What can I help you with today?",
       sender: 'bot',
       timestamp: new Date(),
     },
@@ -256,7 +256,7 @@ const ChatBot: React.FC = () => {
                   </Avatar>
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1.1rem' }}>
-                      Career Compass
+                      Ava
                     </Typography>
                     <Typography variant="caption" sx={{ opacity: 0.9, fontSize: '0.75rem' }}>
                       AI Career Guide • Online
