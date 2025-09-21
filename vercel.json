@@ -5,7 +5,8 @@
       "src": "run_app.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "50mb"
+        "maxLambdaSize": "50mb",
+        "runtime": "python3.12"
       }
     },
     {
@@ -33,10 +34,5 @@
     "GOOGLE_API_KEY": "@google_api_key",
     "GOOGLE_SEARCH_ENGINE_ID": "@google_search_engine_id", 
     "RAPIDAPI_KEY": "@rapidapi_key"
-  },
-  "functions": {
-    "run_app.py": {
-      "maxDuration": 30
-    }
   }
 }
