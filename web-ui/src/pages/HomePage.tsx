@@ -56,6 +56,7 @@ const HomePage: React.FC = () => {
       icon: <Description sx={{ fontSize: 40 }} />,
       path: '/resume',
       color: '#8b5cf6',
+      beta: true,
     },
     {
       title: 'Interview Bot',
@@ -63,6 +64,7 @@ const HomePage: React.FC = () => {
       icon: <Psychology sx={{ fontSize: 40 }} />,
       path: '/interview',
       color: '#ef4444',
+      beta: true,
     },
   ];
 
@@ -107,61 +109,65 @@ const HomePage: React.FC = () => {
                 letterSpacing: '0.1em',
               }}
             >
-              AI-Powered Career Tools
+              Your Career Success Starts Here
             </Typography>
             
             <Typography
               variant="h1"
               sx={{
-                mb: 3,
+                mb: 4,
                 background: 'linear-gradient(135deg, #f1f5f9 0%, #8b5cf6 50%, #3b82f6 100%)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 maxWidth: '4xl',
                 mx: 'auto',
-                fontSize: { xs: '3rem', md: '4rem', lg: '5rem' },
-                fontWeight: 800,
+                fontSize: { xs: '5rem', md: '6rem', lg: '7rem' },
+                fontWeight: 900,
                 textAlign: 'center',
+                lineHeight: 0.8,
+                letterSpacing: '-0.02em',
               }}
             >
               Ava
             </Typography>
             
             <Typography
-              variant="h3"
+              variant="h4"
               sx={{
                 mb: 3,
-                color: '#f1f5f9',
-                maxWidth: '4xl',
+                color: '#e2e8f0',
+                maxWidth: '600px',
                 mx: 'auto',
                 textAlign: 'center',
-                fontWeight: 600,
+                fontWeight: 500,
+                fontSize: { xs: '1.1rem', md: '1.3rem' },
+                lineHeight: 1.5,
               }}
             >
-              AI-Powered Career Tools
+              Your AI-powered career companion
             </Typography>
             
             <Typography
               variant="body1"
               sx={{
-                mb: 6,
-                maxWidth: '600px',
+                mb: 8,
+                maxWidth: '500px',
                 mx: 'auto',
-                fontSize: '1.25rem',
-                lineHeight: 1.7,
+                fontSize: { xs: '0.95rem', md: '1rem' },
+                lineHeight: 1.6,
                 color: '#94a3b8',
+                textAlign: 'center',
               }}
             >
-              Most career tools are helpful, but hard to use together. We make the{' '}
-              opposite trade-off, and hope you don't get overwhelmed.
+              Smart guidance, personalized paths, and intelligent matching for your career success.
             </Typography>
 
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
-              spacing={2}
+              spacing={3}
               justifyContent="center"
-              sx={{ mb: 8 }}
+              sx={{ mb: 12 }}
             >
               <Button
                 variant="contained"
@@ -169,22 +175,23 @@ const HomePage: React.FC = () => {
                 startIcon={<AutoAwesome />}
                 onClick={() => navigate('/career')}
                 sx={{
-                  px: 4,
-                  py: 1.5,
+                  px: 6,
+                  py: 2,
                   fontSize: '1.1rem',
-                  fontWeight: 600,
+                  fontWeight: 700,
+                  borderRadius: 3,
                   background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
-                  border: '1px solid rgba(139, 92, 246, 0.5)',
-                  boxShadow: '0 4px 20px rgba(139, 92, 246, 0.3)',
+                  border: '1px solid rgba(139, 92, 246, 0.3)',
+                  boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3)',
                   '&:hover': {
                     background: 'linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%)',
-                    boxShadow: '0 8px 25px rgba(139, 92, 246, 0.4)',
-                    transform: 'translateY(-2px)',
+                    boxShadow: '0 12px 40px rgba(139, 92, 246, 0.5)',
+                    transform: 'translateY(-3px)',
                   },
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
               >
-                Get started today
+                Start Your Journey
               </Button>
               
               <Button
@@ -192,21 +199,22 @@ const HomePage: React.FC = () => {
                 size="large"
                 startIcon={<PlayArrow />}
                 sx={{
-                  px: 4,
-                  py: 1.5,
+                  px: 6,
+                  py: 2,
                   fontSize: '1.1rem',
                   fontWeight: 600,
-                  borderColor: 'rgba(139, 92, 246, 0.5)',
+                  borderRadius: 3,
                   color: '#8b5cf6',
+                  borderColor: 'rgba(139, 92, 246, 0.5)',
                   '&:hover': {
                     borderColor: '#8b5cf6',
-                    background: 'rgba(139, 92, 246, 0.1)',
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
                     transform: 'translateY(-2px)',
                   },
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
               >
-                Watch demo
+                Watch Demo
               </Button>
             </Stack>
           </Box>
@@ -359,9 +367,31 @@ const HomePage: React.FC = () => {
                         >
                           {tool.icon}
                         </Box>
-                        <Typography variant="h6" sx={{ fontWeight: 600, color: '#f1f5f9' }}>
-                          {tool.title}
-                        </Typography>
+                        <Box sx={{ flex: 1 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Typography variant="h6" sx={{ fontWeight: 600, color: '#f1f5f9' }}>
+                              {tool.title}
+                            </Typography>
+                            {tool.beta && (
+                              <Box
+                                sx={{
+                                  px: 1.5,
+                                  py: 0.5,
+                                  borderRadius: 1,
+                                  background: 'linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%)',
+                                  fontSize: '0.75rem',
+                                  fontWeight: 700,
+                                  color: 'white',
+                                  textTransform: 'uppercase',
+                                  letterSpacing: '0.1em',
+                                  boxShadow: '0 2px 8px rgba(255, 107, 107, 0.3)',
+                                }}
+                              >
+                                Beta
+                              </Box>
+                            )}
+                          </Box>
+                        </Box>
                       </Box>
                       
                       <Typography variant="body2" sx={{ mb: 3, color: '#94a3b8' }}>
@@ -399,28 +429,30 @@ const HomePage: React.FC = () => {
           <Box
             sx={{
               mt: 12,
-              p: 6,
+              p: { xs: 4, md: 6 },
               textAlign: 'center',
-              background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
-              borderRadius: 3,
-              border: '1px solid #334155',
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%)',
+              backdropFilter: 'blur(10px)',
+              borderRadius: 4,
+              border: '1px solid rgba(139, 92, 246, 0.2)',
+              boxShadow: '0 8px 32px rgba(139, 92, 246, 0.1)',
             }}
           >
-            <Typography variant="h3" sx={{ mb: 2, color: 'white' }}>
-              Ready to transform your career?
+            <Typography variant="h3" sx={{ mb: 2, color: '#f1f5f9', fontSize: { xs: '1.75rem', md: '2rem' } }}>
+              Ready to accelerate your career?
             </Typography>
             <Typography
               variant="body1"
               sx={{
                 mb: 4,
-                maxWidth: '500px',
+                maxWidth: '400px',
                 mx: 'auto',
-                fontSize: '1.125rem',
-                color: '#e2e8f0',
+                fontSize: '1rem',
+                color: '#94a3b8',
+                lineHeight: 1.5,
               }}
             >
-              Join thousands of professionals who have accelerated their careers 
-              with our AI-powered tools.
+              Join professionals advancing their careers with AI-powered guidance.
             </Typography>
             <Button
               variant="contained"
@@ -428,10 +460,18 @@ const HomePage: React.FC = () => {
               startIcon={<AutoAwesome />}
               onClick={() => navigate('/career')}
               sx={{
-                px: 4,
+                px: 5,
                 py: 1.5,
-                fontSize: '1.1rem',
+                fontSize: '1rem',
                 fontWeight: 600,
+                background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+                boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%)',
+                  boxShadow: '0 12px 40px rgba(139, 92, 246, 0.4)',
+                  transform: 'translateY(-2px)',
+                },
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               }}
             >
               Start Your Journey

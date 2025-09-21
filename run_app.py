@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Complete working integration of UI + AI
+Unified AI Tools - Main Flask Application
+Provides REST API and WebSocket support for career guidance, job search, resume generation, and voice interviews
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import os
@@ -16,13 +17,28 @@ import uuid
 import base64
 import inspect
 import traceback
+from werkzeug.utils import secure_filename
 
 # Load environment variables
 load_dotenv()
 
+# Configuration
+current_dir = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(current_dir, 'uploads')
+ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 CORS(app, origins="*")
 socketio = SocketIO(app, cors_allowed_origins="*")
+
+# Create upload directory if it doesn't exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Add AI module paths correctly - each module in its own subdirectory
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -112,6 +128,57 @@ except Exception as e:
 @app.route('/api/health')
 def health():
     return jsonify({'status': 'healthy', 'message': 'AI API running'})
+
+# ============================================================================
+# FILE UPLOAD API - Resume Upload
+# ============================================================================
+
+@app.route('/api/upload/resume', methods=['POST'])
+def upload_resume():
+    """Upload resume file for voice interview"""
+    try:
+        print("📄 Resume upload request received")
+        
+        # Check if file was included in request
+        if 'file' not in request.files:
+            return jsonify({'success': False, 'error': 'No file provided'}), 400
+        
+        file = request.files['file']
+        
+        # Check if file was selected
+        if file.filename == '':
+            return jsonify({'success': False, 'error': 'No file selected'}), 400
+        
+        # Check if file type is allowed
+        if not allowed_file(file.filename):
+            return jsonify({'success': False, 'error': 'File type not allowed. Please upload PDF, DOC, or DOCX files.'}), 400
+        
+        # Generate unique filename
+        filename = secure_filename(file.filename)
+        unique_filename = f"{uuid.uuid4()}_{filename}"
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+        
+        # Save file
+        file.save(file_path)
+        
+        print(f"✅ Resume uploaded successfully: {unique_filename}")
+        
+        return jsonify({
+            'success': True,
+            'filename': unique_filename,
+            'original_filename': filename,
+            'file_path': file_path,
+            'message': 'Resume uploaded successfully'
+        })
+        
+    except Exception as e:
+        print(f"❌ Resume upload error: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/uploads/<filename>')
+def uploaded_file(filename):
+    """Serve uploaded files"""
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # ============================================================================
 # CHAT API - Career Compass Chatbot
@@ -485,9 +552,19 @@ def handle_create_session(data):
 
         session_id = str(uuid.uuid4())
         job_description = data.get('jobDescription', '')
-        resume_path = data.get('resumePath', 'resume.pdf')
+        resume_filename = data.get('resumeFilename', '')
+        
+        # Construct full path to uploaded resume
+        if resume_filename and resume_filename != '':
+            resume_path = os.path.join(app.config['UPLOAD_FOLDER'], resume_filename)
+            print(f"📄 Using uploaded resume: {resume_path}")
+        else:
+            # Fallback to default path if no file uploaded
+            resume_path = 'resume.pdf'
+            print(f"📄 Using default resume path: {resume_path}")
 
         print(f"🎙️ Creating interview session: {session_id}")
+        print(f"📝 Job description length: {len(job_description)}")
 
         result = voice_handler.create_session(session_id, job_description, resume_path)
 
@@ -495,9 +572,10 @@ def handle_create_session(data):
             join_room(session_id)
             emit('session_created', {
                 'session_id': session_id,
-                'resume_data': result['resume_data'],
-                'total_questions': result['total_questions'],
-                'fixed_questions': result['fixed_starter_questions']
+                'candidate_name': result.get('candidate_name'),
+                'job_title': result.get('job_title'),
+                'total_questions': result.get('total_questions'),
+                'message': result.get('message')
             })
             print(f"✅ Session created successfully: {session_id}")
         else:
@@ -537,7 +615,7 @@ def handle_get_question(data):
 
 @socketio.on('audio_chunk')
 def handle_audio_chunk(data):
-    """Process incoming audio chunk"""
+    """Process incoming audio chunk (complete audio answer)"""
     try:
         print(f"🎵 Received audio_chunk event")
         if voice_handler is None:
@@ -546,11 +624,9 @@ def handle_audio_chunk(data):
 
         session_id = data.get('session_id')
         audio_b64 = data.get('audio_data')
-        mime_type = data.get('mime_type', 'audio/webm')  # Default to webm if not provided
 
         print(f"🔑 Session ID: {session_id}")
         print(f"📊 Audio data length: {len(audio_b64) if audio_b64 else 0}")
-        print(f"🎧 MIME type: {mime_type}")
 
         if not session_id or not audio_b64:
             emit('error', {'message': 'Session ID and audio data required'})
@@ -559,13 +635,19 @@ def handle_audio_chunk(data):
         # Decode audio data
         audio_bytes = base64.b64decode(audio_b64)
 
-        # Process audio chunk with MIME type
-        print(f"🎤 Processing audio chunk...")
-        voice_handler.process_audio_chunk(session_id, audio_bytes, mime_type)
-        print(f"✅ Audio chunk processed successfully")
-
-        # Acknowledge receipt
-        emit('audio_received', {'status': 'received'}, room=session_id)
+        # Submit answer using the new method
+        print(f"🎤 Processing audio answer...")
+        result = voice_handler.submit_answer(session_id, audio_bytes)
+        
+        if result['success']:
+            emit('answer_processed', {
+                'transcription': result['transcription'],
+                'question_number': result['question_number'],
+                'next_available': result['next_available']
+            }, room=session_id)
+            print(f"✅ Answer processed successfully")
+        else:
+            emit('error', {'message': result['error']})
 
     except Exception as e:
         print(f"❌ Error processing audio chunk: {e}")
@@ -573,62 +655,31 @@ def handle_audio_chunk(data):
 
 @socketio.on('finish_recording')
 def handle_finish_recording(data):
-    """Process complete audio recording"""
+    """Process complete audio recording (legacy support)"""
     try:
-        if voice_handler is None:
-            emit('error', {'message': 'Voice interview handler not available'})
-            return
-
-        session_id = data.get('session_id')
-        if not session_id:
-            emit('error', {'message': 'Session ID required'})
-            return
-
-        print(f"🎤 Finishing recording for session: {session_id}")
-
-        result = voice_handler.finish_recording(session_id)
-
-        if result['success']:
-            emit('recording_processed', result, room=session_id)
-            print(f"✅ Recording processed for question {result['question_number']}")
-
-            # Start polling for transcription
-            emit('transcription_started', {'question_number': result['question_number']}, room=session_id)
-        else:
-            emit('error', {'message': result['error']}, room=session_id)
+        # This is handled by audio_chunk now, but keeping for compatibility
+        print(f"📝 Finish recording event received (using audio_chunk instead)")
+        emit('info', {'message': 'Use audio_chunk event to submit complete audio'})
 
     except Exception as e:
-        print(f"❌ Error finishing recording: {e}")
+        print(f"❌ Error in finish_recording: {e}")
         emit('error', {'message': str(e)})
 
 @socketio.on('get_transcription')
 def handle_get_transcription(data):
-    """Get transcription for the current answer"""
+    """Get transcription status (legacy support)"""
     try:
-        if voice_handler is None:
-            emit('error', {'message': 'Voice interview handler not available'})
-            return
-
-        session_id = data.get('session_id')
-        if not session_id:
-            emit('error', {'message': 'Session ID required'})
-            return
-
-        result = voice_handler.get_transcription(session_id)
-
-        if result['success']:
-            emit('transcription_ready', result, room=session_id)
-            print(f"✅ Transcription ready for question {result['question_number']}")
-        else:
-            emit('transcription_pending', {'message': result['error']}, room=session_id)
+        # Transcriptions are now handled immediately in submit_answer
+        print(f"📝 Get transcription event received (transcriptions handled immediately)")
+        emit('info', {'message': 'Transcriptions are processed immediately with answers'})
 
     except Exception as e:
         print(f"❌ Error getting transcription: {e}")
         emit('error', {'message': str(e)})
 
-@socketio.on('get_session_status')
-def handle_get_status(data):
-    """Get current session status"""
+@socketio.on('get_final_report')
+def handle_get_final_report(data):
+    """Get final interview evaluation report"""
     try:
         if voice_handler is None:
             emit('error', {'message': 'Voice interview handler not available'})
@@ -639,20 +690,23 @@ def handle_get_status(data):
             emit('error', {'message': 'Session ID required'})
             return
 
-        result = voice_handler.get_session_status(session_id)
+        print(f"📊 Getting final report for session: {session_id}")
+
+        result = voice_handler.get_final_report(session_id)
 
         if result['success']:
-            emit('session_status', result, room=session_id)
+            emit('final_report', result, room=session_id)
+            print(f"✅ Final report generated")
         else:
             emit('error', {'message': result['error']})
 
     except Exception as e:
-        print(f"❌ Error getting session status: {e}")
+        print(f"❌ Error getting final report: {e}")
         emit('error', {'message': str(e)})
 
-@socketio.on('end_interview')
-def handle_end_interview(data):
-    """End the interview session"""
+@socketio.on('cleanup_session')
+def handle_cleanup_session(data):
+    """Clean up interview session"""
     try:
         if voice_handler is None:
             emit('error', {'message': 'Voice interview handler not available'})
@@ -663,19 +717,19 @@ def handle_end_interview(data):
             emit('error', {'message': 'Session ID required'})
             return
 
-        print(f"🏁 Ending interview session: {session_id}")
+        print(f"🧹 Cleaning up session: {session_id}")
 
-        result = voice_handler.end_session(session_id)
+        result = voice_handler.cleanup_session(session_id)
 
         if result['success']:
-            emit('interview_completed', result, room=session_id)
+            emit('session_cleaned', {'message': 'Session cleaned up successfully'}, room=session_id)
             leave_room(session_id)
-            print(f"✅ Interview completed: {result['total_questions_asked']} questions")
+            print(f"✅ Session cleaned up: {session_id}")
         else:
             emit('error', {'message': result['error']})
 
     except Exception as e:
-        print(f"❌ Error ending interview: {e}")
+        print(f"❌ Error cleaning up session: {e}")
         emit('error', {'message': str(e)})
 
 def start_frontend():

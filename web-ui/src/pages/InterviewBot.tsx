@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Box,
   Typography,
@@ -14,11 +14,14 @@ import {
   Chip,
   Switch,
   FormControlLabel,
+  LinearProgress,
 } from '@mui/material';
 import {
   VoiceChat,
   PlayArrow,
   Computer,
+  CloudUpload,
+  Description,
 } from '@mui/icons-material';
 import { useStartVoiceInterviewMutation, useExecuteVoiceInterviewMutation } from '../store/apiSlice';
 import { VoiceInterviewSession } from '../components/Interview/VoiceInterviewSession';
@@ -30,8 +33,54 @@ export default function InterviewBot() {
   const [useLiveInterview, setUseLiveInterview] = useState(true);
   const [showLiveInterview, setShowLiveInterview] = useState(false);
   const [interviewReport, setInterviewReport] = useState<any>(null);
+  const [uploadedResume, setUploadedResume] = useState<any>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [startVoiceInterview, { isLoading: isStartingVoice }] = useStartVoiceInterviewMutation();
   const [executeVoiceInterview, { isLoading: isExecutingVoice }] = useExecuteVoiceInterviewMutation();
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Please upload a PDF, DOC, or DOCX file');
+      return;
+    }
+
+    // Validate file size (16MB max)
+    if (file.size > 16 * 1024 * 1024) {
+      alert('File size must be less than 16MB');
+      return;
+    }
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch('http://localhost:8000/api/upload/resume', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setUploadedResume(result);
+        console.log('✅ Resume uploaded successfully:', result);
+      } else {
+        alert(`Upload failed: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('❌ Upload error:', error);
+      alert('Failed to upload resume. Please try again.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleStartVoiceInterview = async () => {
     if (!jobDescription.trim()) {
@@ -39,10 +88,15 @@ export default function InterviewBot() {
       return;
     }
 
+    if (!uploadedResume) {
+      alert('Please upload your resume first');
+      return;
+    }
+
     try {
       const result = await startVoiceInterview({
         jobDescription: jobDescription,
-        resumeFile: 'resume.pdf'
+        resumeFilename: uploadedResume.filename
       }).unwrap();
 
       setVoiceSession(result.data);
@@ -81,9 +135,27 @@ export default function InterviewBot() {
 
   return (
     <Box sx={{ maxWidth: 800, mx: 'auto', p: 4 }}>
-      <Typography variant="h3" sx={{ mb: 4, fontWeight: 700, textAlign: 'center' }}>
-        AVA Voice Interview
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 4, gap: 2 }}>
+        <Typography variant="h3" sx={{ fontWeight: 700, textAlign: 'center' }}>
+          AVA Voice Interview
+        </Typography>
+        <Box
+          sx={{
+            px: 2,
+            py: 1,
+            borderRadius: 2,
+            background: 'linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%)',
+            fontSize: '0.9rem',
+            fontWeight: 700,
+            color: 'white',
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+            boxShadow: '0 4px 12px rgba(255, 107, 107, 0.3)',
+          }}
+        >
+          Beta
+        </Box>
+      </Box>
 
       <Card sx={{ border: '2px solid', borderColor: 'primary.main' }}>
         <CardContent sx={{ textAlign: 'center', p: 4 }}>
@@ -131,8 +203,55 @@ export default function InterviewBot() {
           {!voiceSession ? (
             <>
               <Alert severity="info" sx={{ mb: 2 }}>
-                Requirements: Microphone, quiet environment, resume.pdf file
+                Requirements: Microphone, quiet environment, and your resume file
               </Alert>
+
+              {/* Resume Upload Section */}
+              <Card variant="outlined" sx={{ mb: 2 }}>
+                <CardContent>
+                  <Typography variant="h6" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Description />
+                    Upload Resume
+                  </Typography>
+                  
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    accept=".pdf,.doc,.docx"
+                    style={{ display: 'none' }}
+                  />
+                  
+                  {!uploadedResume ? (
+                    <Button
+                      variant="outlined"
+                      startIcon={<CloudUpload />}
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploading}
+                      fullWidth
+                    >
+                      {isUploading ? 'Uploading...' : 'Choose Resume File (PDF, DOC, DOCX)'}
+                    </Button>
+                  ) : (
+                    <Box>
+                      <Alert severity="success" sx={{ mb: 1 }}>
+                        ✅ Resume uploaded: {uploadedResume.original_filename}
+                      </Alert>
+                      <Button
+                        variant="text"
+                        startIcon={<CloudUpload />}
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploading}
+                        size="small"
+                      >
+                        Upload Different File
+                      </Button>
+                    </Box>
+                  )}
+                  
+                  {isUploading && <LinearProgress sx={{ mt: 1 }} />}
+                </CardContent>
+              </Card>
 
               <FormControlLabel
                 control={
@@ -237,6 +356,7 @@ export default function InterviewBot() {
       {showLiveInterview && (
         <VoiceInterviewSession
           jobDescription={jobDescription}
+          resumeFilename={uploadedResume?.filename}
           onComplete={handleInterviewComplete}
         />
       )}

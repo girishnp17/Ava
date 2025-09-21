@@ -38,12 +38,20 @@ Assist the user in the job application phase.
 
 
 try:
+    from dotenv import load_dotenv
+    import os
     
-    api_key = "AIzaSyC9_JuHKDLQNofqATcD7cswOxL-4p7orjg"
+    # Load environment variables
+    load_dotenv()
+    
+    api_key = os.getenv('GOOGLE_API_KEY')
+    if not api_key:
+        raise ValueError("GOOGLE_API_KEY not found in environment variables")
+    
     genai.configure(api_key=api_key)
-except KeyError:
-    print("🔴 Error: GOOGLE_API_KEY environment variable not set.")
-    print("Please set the environment variable to your Google API key.")
+except Exception as e:
+    print(f"🔴 Error: {e}")
+    print("Please set the GOOGLE_API_KEY environment variable to your Google API key.")
     exit()
 
 # --- 3. Model Initialization ---

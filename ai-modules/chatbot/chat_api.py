@@ -49,7 +49,16 @@ Assist the user in the job application phase.
 
 # Initialize Gemini AI
 try:
-    api_key = "AIzaSyC9_JuHKDLQNofqATcD7cswOxL-4p7orjg"
+    from dotenv import load_dotenv
+    import os
+    
+    # Load environment variables
+    load_dotenv()
+    
+    api_key = os.getenv('GOOGLE_API_KEY')
+    if not api_key:
+        raise ValueError("GOOGLE_API_KEY not found in environment variables")
+    
     genai.configure(api_key=api_key)
     
     model = genai.GenerativeModel(

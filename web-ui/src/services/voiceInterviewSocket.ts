@@ -59,6 +59,7 @@ export type VoiceInterviewEventHandlers = {
   onRecordingProcessed: (result: { question_number: number }) => void;
   onTranscriptionStarted: (data: { question_number: number }) => void;
   onTranscriptionReady: (result: TranscriptionResult) => void;
+  onTranscriptionEvent: (data: { transcription: string; question_number: number; session_id: string }) => void;
   onTranscriptionPending: () => void;
   onSessionStatus: (status: SessionStatus) => void;
   onInterviewCompleted: (report: InterviewReport) => void;
@@ -125,9 +126,17 @@ class VoiceInterviewSocketService {
           this.handlers.onTranscriptionStarted?.(data);
         });
 
-        this.socket.on('transcription_ready', (result: TranscriptionResult) => {
-          console.log(`✅ Transcription ready: "${result.transcription.substring(0, 50)}..."`);
-          this.handlers.onTranscriptionReady?.(result);
+        this.socket.on('transcription_ready', (result: TranscriptionResult | { transcription: string; question_number: number; session_id: string }) => {
+          console.log(`✅ Transcription ready: "${(result as any).transcription?.substring(0, 50) || (result as TranscriptionResult).transcription?.substring(0, 50)}..."`);
+          
+          // Handle both old and new format
+          if ('transcription' in result && 'question_number' in result && 'session_id' in result) {
+            // New format from backend
+            this.handlers.onTranscriptionEvent?.(result as { transcription: string; question_number: number; session_id: string });
+          } else {
+            // Old format
+            this.handlers.onTranscriptionReady?.(result as TranscriptionResult);
+          }
         });
 
         this.socket.on('transcription_pending', () => {
@@ -162,12 +171,12 @@ class VoiceInterviewSocketService {
     this.handlers = { ...this.handlers, ...handlers };
   }
 
-  createSession(jobDescription: string, resumePath: string = 'resume.pdf'): void {
+  createSession(jobDescription: string, resumeFilename: string = ''): void {
     if (!this.socket) throw new Error('Socket not connected');
 
     this.socket.emit('create_interview_session', {
       jobDescription,
-      resumePath
+      resumeFilename
     });
   }
 

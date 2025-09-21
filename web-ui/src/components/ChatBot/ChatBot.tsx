@@ -184,13 +184,14 @@ const ChatBot: React.FC = () => {
       >
         <Fab
           color="primary"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setIsOpen(true)}
           sx={{
             position: 'fixed',
             bottom: 24,
             right: 24,
             background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
             boxShadow: '0 8px 32px rgba(139, 92, 246, 0.4)',
+            display: isOpen ? 'none' : 'flex',
             '&:hover': {
               background: 'linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%)',
               transform: 'scale(1.1)',
@@ -200,12 +201,7 @@ const ChatBot: React.FC = () => {
             zIndex: 1300,
           }}
         >
-          <motion.div
-            animate={{ rotate: isOpen ? 180 : 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {isOpen ? <Close /> : <Chat />}
-          </motion.div>
+          <Chat />
         </Fab>
       </motion.div>
 
@@ -276,6 +272,7 @@ const ChatBot: React.FC = () => {
                   <IconButton
                     onClick={() => setIsOpen(false)}
                     sx={{ color: 'white' }}
+                    title="Close Chat"
                   >
                     <Close fontSize="small" />
                   </IconButton>

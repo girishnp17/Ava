@@ -17,13 +17,13 @@ import { AudioRecorder } from './AudioRecorder';
 
 interface VoiceInterviewSessionProps {
   jobDescription: string;
-  resumePath?: string;
+  resumeFilename?: string;
   onComplete?: (report: any) => void;
 }
 
 export const VoiceInterviewSession: React.FC<VoiceInterviewSessionProps> = ({
   jobDescription,
-  resumePath = 'resume.pdf',
+  resumeFilename = '',
   onComplete
 }) => {
   const {
@@ -62,10 +62,10 @@ export const VoiceInterviewSession: React.FC<VoiceInterviewSessionProps> = ({
   }, [isInitialized, isConnected, isConnecting, connect]);
 
   useEffect(() => {
-    if (isConnected && !session) {
-      createSession(jobDescription, resumePath);
+    if (isConnected && !session && jobDescription && resumeFilename) {
+      createSession(jobDescription, resumeFilename);
     }
-  }, [isConnected, session, jobDescription, resumePath, createSession]);
+  }, [isConnected, session, jobDescription, resumeFilename, createSession]);
 
   useEffect(() => {
     if (session && !currentQuestion) {

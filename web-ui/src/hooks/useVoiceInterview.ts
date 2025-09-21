@@ -49,7 +49,7 @@ export interface UseVoiceInterviewActions {
   disconnect: () => void;
 
   // Session actions
-  createSession: (jobDescription: string, resumePath?: string) => void;
+  createSession: (jobDescription: string, resumeFilename?: string) => void;
   endInterview: () => void;
 
   // Question actions
@@ -140,30 +140,27 @@ export const useVoiceInterview = (): UseVoiceInterviewState & UseVoiceInterviewA
       },
 
       onRecordingProcessed: (_result) => {
+        console.log('✅ Audio processed, next question will come automatically');
         setState(prev => ({
           ...prev,
           isProcessingAudio: false,
-          isTranscribing: true
+          isTranscribing: false // No need to show transcribing state
         }));
       },
 
+      // Legacy transcription handlers - now simplified since backend handles everything
       onTranscriptionStarted: () => {
-        setState(prev => ({ ...prev, isTranscribing: true }));
+        console.log('📝 Transcription started in background');
       },
 
-      onTranscriptionReady: (result) => {
-        setState(prev => ({
-          ...prev,
-          currentTranscription: result,
-          transcriptionHistory: [...prev.transcriptionHistory, result],
-          isTranscribing: false
-        }));
+      onTranscriptionReady: (_result) => {
+        console.log('📝 Transcription completed in background');
+        // No state updates needed - next question comes automatically
+      },
 
-        // Clear polling
-        if (transcriptionPollingRef.current) {
-          clearInterval(transcriptionPollingRef.current);
-          transcriptionPollingRef.current = null;
-        }
+      onTranscriptionEvent: (_data) => {
+        console.log('📝 Transcription event received in background');
+        // No state updates needed - next question comes automatically
       },
 
       onTranscriptionPending: () => {
@@ -228,8 +225,8 @@ export const useVoiceInterview = (): UseVoiceInterviewState & UseVoiceInterviewA
   }, []);
 
   // Session actions
-  const createSession = useCallback((jobDescription: string, resumePath = 'resume.pdf') => {
-    voiceInterviewSocket.createSession(jobDescription, resumePath);
+  const createSession = useCallback((jobDescription: string, resumeFilename = '') => {
+    voiceInterviewSocket.createSession(jobDescription, resumeFilename);
   }, []);
 
   const endInterview = useCallback(() => {
@@ -304,12 +301,15 @@ export const useVoiceInterview = (): UseVoiceInterviewState & UseVoiceInterviewA
           voiceInterviewSocket.sendAudioChunk(currentSessionId, base64String, audioMimeTypeRef.current);
           voiceInterviewSocket.finishRecording(currentSessionId);
 
-          // Start polling for transcription
-          transcriptionPollingRef.current = setInterval(() => {
-            voiceInterviewSocket.getTranscription(currentSessionId);
-          }, 2000);
+          // Immediately request next question without waiting for transcription
+          console.log('🚀 Audio sent, immediately requesting next question...');
+          setTimeout(() => {
+            if (sessionIdRef.current) {
+              voiceInterviewSocket.getNextQuestion(sessionIdRef.current);
+            }
+          }, 500); // Very short delay just to ensure audio is received by backend
 
-          setState(prev => ({ ...prev, isProcessingAudio: true }));
+          setState(prev => ({ ...prev, isProcessingAudio: false })); // Don't show processing state
         } else {
           console.error('❌ No session ID available for audio processing!');
           setState(prev => ({ ...prev, error: 'Session not found. Please restart the interview.' }));

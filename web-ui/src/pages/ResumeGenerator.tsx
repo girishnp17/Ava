@@ -527,9 +527,27 @@ export default function ResumeGenerator() {
 
   return (
     <Box>
-      <Typography variant="h3" sx={{ mb: 4, fontWeight: 700, textAlign: 'center' }}>
-        AI Resume Generator
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 4, gap: 2 }}>
+        <Typography variant="h3" sx={{ fontWeight: 700, textAlign: 'center' }}>
+          AI Resume Generator
+        </Typography>
+        <Box
+          sx={{
+            px: 2,
+            py: 1,
+            borderRadius: 2,
+            background: 'linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%)',
+            fontSize: '0.9rem',
+            fontWeight: 700,
+            color: 'white',
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+            boxShadow: '0 4px 12px rgba(255, 107, 107, 0.3)',
+          }}
+        >
+          Beta
+        </Box>
+      </Box>
 
       <Paper sx={{ p: 4, mb: 4 }}>
         <Stepper activeStep={currentStep} sx={{ mb: 4 }}>
